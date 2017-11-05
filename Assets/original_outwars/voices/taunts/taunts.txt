@@ -1,0 +1,25 @@
+;Taunts may use numbers between 1 and 47
+;Judd's Network Taunts
+JUDD_T1   20
+JUDD_T2   5
+JUDD_T3   10
+JUDD_T4   22
+JUDD_T5   37
+JUDD_T6   2
+JUDD_T7   3
+JUDD_T8   9
+JUDD_T9   13
+JUDD_T0   32
+
+;Jett's Network Taunts
+JETT_T1   20
+JETT_T2   5
+JETT_T3   10
+JETT_T4   22
+JETT_T5   37
+JETT_T6   2
+JETT_T7   3
+JETT_T8   9
+JETT_T9   13
+JETT_T0   32
+END
