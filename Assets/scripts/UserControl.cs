@@ -63,7 +63,7 @@ public class UserControl : MonoBehaviour
 
     void Update ()
     {
-        testArrow.rotation = Quaternion.LookRotation(rb.velocity, transform.up);
+        //testArrow.rotation = Quaternion.LookRotation(rb.velocity, transform.up);
         
 
         if (openingWings)
