@@ -6,11 +6,11 @@ public class UserControl : MonoBehaviour
     public float strafeSpeed, walkSpeed, yawSpeed;
     public float maxWingsOpenDelta, baseWingsDrag, maxStallDelta, maxGravityEffect;
     public float jetpackPush, jetpackPushWings, maxVelocity, stallWarningVelocity, stallCriticalVelocity;
-    public float pitchSensitivity, wingsMomentumTransferFactor;
+    public float flySensitivity, wingsMomentumTransferFactor;
 
     public float maxCameraSpeed;
 
-    public Transform gunpoint, player, testArrow;
+    public Transform gunpoint, player, testArrow, playerDummy, cameraDummy;
     public GameObject jetpack, wings;
     public HUDManager HUDmanager;
 
@@ -83,41 +83,70 @@ public class UserControl : MonoBehaviour
         // Main movement
         if (wingsAreOpen) // Fly
         {
-            stalling = false;
+			if(HUDmanager.isJumping())
+			{
+				stalling = false;
+				rb.useGravity = false;
+			}
 
-            if (rb.velocity.magnitude < stallWarningVelocity)
+			if (rb.velocity.magnitude < stallWarningVelocity)
             {
                 if (!stallWarning.isPlaying)
                     stallWarning.Play();
 
-                if (rb.velocity.magnitude < stallCriticalVelocity)
+				if (rb.velocity.magnitude < stallCriticalVelocity)
                 {
-                    player.localRotation = Quaternion.RotateTowards(player.localRotation, Quaternion.Euler(180, player.localRotation.y, player.localRotation.z), maxStallDelta);
                     stalling = true;
-                }
+					rb.useGravity = true;
+				}
             }
 
-            // YAW
-            // Apply spherical jacobian?
-            //yaw += Input.GetAxis("x") * yawSpeed;
-            //yaw = Mathf.Clamp(yaw, -1,1);
-            //player.transform.localRotation = Quaternion.LookRotation(new Vector3(yaw, 1 - Mathf.Abs(yaw), 0), -Vector3.forward);
+			if(stalling)
+				player.localRotation = Quaternion.RotateTowards(player.localRotation, Quaternion.Euler(180, player.localRotation.y, player.localRotation.z), maxStallDelta);
 
-            // set a horizontal velocity proportionnal to yaw
+			// yaw
+			float yawChange = Input.GetAxis("x") * flySensitivity;
+			player.rotation = Quaternion.RotateTowards(player.rotation, Quaternion.LookRotation(player.right, player.up), yawChange); // minus delta may be applied
 
-            // PITCH
-            // Change dummy angle
-            float pitchChange = Input.GetAxis("z") * pitchSensitivity;
-            player.rotation = Quaternion.RotateTowards(player.rotation, Quaternion.LookRotation(-player.up, player.forward), pitchChange); // minus delta may be applied
+			// pitch
+			float pitchChange = Input.GetAxis("z") * flySensitivity;
+			player.rotation = Quaternion.RotateTowards(player.rotation, Quaternion.LookRotation(-player.up, player.forward), pitchChange); // minus delta may be applied
 
-            // HERE - SEE FIXEDUPDATE
-            // set a vertical acceleration proportional to pitch
-            //rb.AddForce(-Vector3.up * Vector3.Dot(Physics.gravity, player.up) * wingsMomentumTransferFactor);
+			// move mouse horizontally
+			Camera.main.transform.RotateAround(transform.position, transform.up, Input.GetAxis("Mouse X"));
+			gunpoint.transform.RotateAround(transform.position, transform.up, Input.GetAxis("Mouse X"));
 
-            // transfer momentum from horiz to verti proportional according to heading
-            //rb.MoveRotation(rb.rotation * Quaternion.LookRotation(player.up * Time.deltaTime * wingsMomentumTransferFactor));
+			// move mouse vertically
+			Camera.main.transform.RotateAround(transform.position, transform.right, Input.GetAxis("Mouse Y"));
+			gunpoint.transform.RotateAround(transform.position, transform.right, Input.GetAxis("Mouse Y"));
 
-            if (Quaternion.Angle(Quaternion.LookRotation(rb.velocity), Quaternion.LookRotation(player.up)) > 1.0f)
+			//playerDummy.Rotate(0, Input.GetAxis("Mouse X"), 0); // move mouse horizontally
+			//cameraDummy.RotateAround(playerDummy.position, playerDummy.right, Input.GetAxis("Mouse Y")); // move mouse vertically
+
+
+
+
+
+			// YAW
+			// Apply spherical jacobian?
+			//yaw += Input.GetAxis("x") * yawSpeed;
+			//yaw = Mathf.Clamp(yaw, -1,1);
+			//player.transform.localRotation = Quaternion.LookRotation(new Vector3(yaw, 1 - Mathf.Abs(yaw), 0), -Vector3.forward);
+
+			// set a horizontal velocity proportionnal to yaw
+
+			// PITCH
+			// Change dummy angle
+
+
+			// HERE - SEE FIXEDUPDATE
+			// set a vertical acceleration proportional to pitch
+			//rb.AddForce(-Vector3.up * Vector3.Dot(Physics.gravity, player.up) * wingsMomentumTransferFactor);
+
+			// transfer momentum from horiz to verti proportional according to heading
+			//rb.MoveRotation(rb.rotation * Quaternion.LookRotation(player.up * Time.deltaTime * wingsMomentumTransferFactor));
+
+			if (Quaternion.Angle(Quaternion.LookRotation(rb.velocity), Quaternion.LookRotation(player.up)) > 1.0f)
             {
                 //rb.velocity = Vector3.MoveTowards(rb.velocity, player.up, wingsMomentumTransferFactor);
                 //rb.velocity = Quaternion.RotateTowards(Quaternion.LookRotation(rb.velocity), Quaternion.LookRotation(player.up), wingsMomentumTransferFactor) * rb.velocity;
@@ -130,12 +159,11 @@ public class UserControl : MonoBehaviour
             float z_mvt = Input.GetAxis("z") * walkSpeed * armorSpeedFactor; // positive = walk backward
 
             transform.Translate(x_mvt, 0, z_mvt);
-
             transform.Rotate(0, Input.GetAxis("Mouse X"), 0); // move mouse horizontally
 
-            Camera.main.transform.RotateAround(transform.position, transform.right, Input.GetAxis("Mouse Y")); // move mouse vertically
+			Camera.main.transform.RotateAround(transform.position, transform.right, Input.GetAxis("Mouse Y")); // move mouse vertically
             gunpoint.transform.RotateAround(transform.position, transform.right, Input.GetAxis("Mouse Y")); // move mouse vertically
-        }
+		}
 
         // Jump (jetpack)
         if (HUDmanager.isJumping())
@@ -174,14 +202,24 @@ public class UserControl : MonoBehaviour
                 currentJetpackPush = jetpackPush;
                 rb.drag = baseDrag;
                 rb.useGravity = true;
-            }
+
+				//transform.rotation = playerDummy.rotation;
+				//Camera.main.transform.position = cameraDummy.position;
+				//Camera.main.transform.rotation = cameraDummy.rotation;
+
+			}
             else // open wings
             {
-                openingWings = true;
+				//playerDummy.position = transform.position;
+				//playerDummy.rotation = transform.rotation;
+				//cameraDummy.position = Camera.main.transform.position;
+				//cameraDummy.rotation = Camera.main.transform.rotation;
+
+				openingWings = true;
                 wingsOpenSnd.Play();
                 wings.SetActive(true);
                 currentJetpackPush = jetpackPushWings;
-                rb.drag = baseWingsDrag;
+				rb.drag = baseWingsDrag;
                 rb.useGravity = false;
                 yaw = 0;
             }
