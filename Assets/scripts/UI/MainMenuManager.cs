@@ -18,6 +18,12 @@ public class MainMenuManager : MonoBehaviour
 	GameObject GroupManeuvers;
 
 	[SerializeField]
+	GameObject GroupManeuvers_Host;
+
+	[SerializeField]
+	GameObject GroupManeuvers_Host_In;
+
+	[SerializeField]
 	GameObject Options;
 
 	public void loadTestZone()
@@ -31,6 +37,8 @@ public class MainMenuManager : MonoBehaviour
 		SoloCampaign.SetActive(false);
 		SingleMission.SetActive(false);
 		GroupManeuvers.SetActive(false);
+		GroupManeuvers_Host.SetActive(false);
+		GroupManeuvers_Host_In.SetActive(false);
 		Options.SetActive(false);
 	}
 
@@ -40,6 +48,8 @@ public class MainMenuManager : MonoBehaviour
 		SoloCampaign.SetActive(true);
 		SingleMission.SetActive(false);
 		GroupManeuvers.SetActive(false);
+		GroupManeuvers_Host.SetActive(false);
+		GroupManeuvers_Host_In.SetActive(false);
 		Options.SetActive(false);
 	}
 
@@ -49,6 +59,8 @@ public class MainMenuManager : MonoBehaviour
 		SoloCampaign.SetActive(false);
 		SingleMission.SetActive(true);
 		GroupManeuvers.SetActive(false);
+		GroupManeuvers_Host.SetActive(false);
+		GroupManeuvers_Host_In.SetActive(false);
 		Options.SetActive(false);
 	}
 
@@ -58,6 +70,30 @@ public class MainMenuManager : MonoBehaviour
 		SoloCampaign.SetActive(false);
 		SingleMission.SetActive(false);
 		GroupManeuvers.SetActive(true);
+		GroupManeuvers_Host.SetActive(false);
+		GroupManeuvers_Host_In.SetActive(false);
+		Options.SetActive(false);
+	}
+
+	public void showGroupManeuvers_Host()
+	{
+		Main.SetActive(false);
+		SoloCampaign.SetActive(false);
+		SingleMission.SetActive(false);
+		GroupManeuvers.SetActive(false);
+		GroupManeuvers_Host.SetActive(true);
+		GroupManeuvers_Host_In.SetActive(false);
+		Options.SetActive(false);
+	}
+
+	public void showGroupManeuvers_Host_In()
+	{
+		Main.SetActive(false);
+		SoloCampaign.SetActive(false);
+		SingleMission.SetActive(false);
+		GroupManeuvers.SetActive(false);
+		GroupManeuvers_Host.SetActive(false);
+		GroupManeuvers_Host_In.SetActive(true);
 		Options.SetActive(false);
 	}
 
@@ -67,6 +103,8 @@ public class MainMenuManager : MonoBehaviour
 		SoloCampaign.SetActive(false);
 		SingleMission.SetActive(false);
 		GroupManeuvers.SetActive(false);
+		GroupManeuvers_Host.SetActive(false);
+		GroupManeuvers_Host_In.SetActive(false);
 		Options.SetActive(true);
 	}
 }
