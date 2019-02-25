@@ -113,14 +113,16 @@ public class UserControl : MonoBehaviour
 			player.rotation = yaw * pitch * roll* player.rotation;
 
 			// aim vertically
-			aim.RotateAround(transform.position, -1.0f * transform.right, Input.GetAxis("Mouse Y"));
+			//aim.RotateAround(transform.position, -1.0f * transform.right, Input.GetAxis("Mouse Y"));
+			aim.RotateAround(transform.position, -1.0f * aim.right, Input.GetAxis("Mouse Y"));
 			aim.localRotation.ToAngleAxis(out float theta_mouse_y, out Vector3 u_mouse_y);
-			aim.localRotation = Quaternion.AngleAxis(Mathf.Clamp(theta_mouse_y, -85.0f, 85.0f), u_mouse_y);
+			//aim.localRotation = Quaternion.AngleAxis(Mathf.Clamp(theta_mouse_y, -85.0f, 85.0f), u_mouse_y);
+			aim.localRotation = Quaternion.AngleAxis(theta_mouse_y, u_mouse_y);
 
 			// aim horizontally
-			//aim.RotateAround(transform.position, -1.0f * transform.up, Input.GetAxis("Mouse X"));
-			//aim.localRotation.ToAngleAxis(out float theta_mouse_x, out Vector3 u_mouse_x);
-			//aim.localRotation = Quaternion.AngleAxis(theta_mouse_x, u_mouse_x);
+			aim.RotateAround(transform.position, aim.up, Input.GetAxis("Mouse X"));
+			aim.localRotation.ToAngleAxis(out float theta_mouse_x, out Vector3 u_mouse_x);
+			aim.localRotation = Quaternion.AngleAxis(theta_mouse_x, u_mouse_x);
 		}
         else // Walk
         {
@@ -130,7 +132,8 @@ public class UserControl : MonoBehaviour
             transform.Translate(x_mvt, 0, z_mvt);
             transform.Rotate(0, Input.GetAxis("Mouse X"), 0); // move mouse horizontally
 
-			aim.RotateAround(transform.position, -1.0f * transform.right, Input.GetAxis("Mouse Y")); // move mouse vertically
+			// move mouse vertically
+			aim.RotateAround(transform.position, -1.0f * transform.right, Input.GetAxis("Mouse Y"));
 			aim.localRotation.ToAngleAxis(out float theta, out Vector3 u);
 			aim.localRotation = Quaternion.AngleAxis( Mathf.Clamp(theta, -85.0f, 85.0f), u );
 		}
@@ -172,7 +175,7 @@ public class UserControl : MonoBehaviour
                 currentJetpackPush = jetpackPush;
                 rb.drag = baseDrag;
                 rb.useGravity = true;
-				//aim.localRotation = aim.localRotation.
+				aim.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 			}
             else // open wings
             {
