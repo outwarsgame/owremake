@@ -104,10 +104,13 @@ public class UserControl : MonoBehaviour
 			Vector3 pitch_axis = player.right; float c_pitch = Mathf.Cos(pitchChange / 2.0f); float s_pitch = Mathf.Sin(pitchChange / 2.0f);
 			Quaternion pitch = new Quaternion(s_pitch * pitch_axis.x, s_pitch * pitch_axis.y, s_pitch * pitch_axis.z, c_pitch);
 
-			// Apply rotations
-			player.rotation = yaw * pitch * player.rotation;
+			// Roll
+			float rollChange = -1.0f * Input.GetAxis("y") * flySensitivity;
+			Vector3 roll_axis = player.forward; float c_roll = Mathf.Cos(rollChange / 2.0f); float s_roll = Mathf.Sin(rollChange / 2.0f);
+			Quaternion roll = new Quaternion(s_roll * roll_axis.x, s_roll * roll_axis.y, s_roll * roll_axis.z, c_roll);
 
-			transform.Rotate(0, Input.GetAxis("Mouse X"), 0); // move mouse horizontally
+			// Apply rotations
+			player.rotation = yaw * pitch * roll* player.rotation;
 
 			// aim vertically
 			aim.RotateAround(transform.position, -1.0f * transform.right, Input.GetAxis("Mouse Y"));
@@ -115,7 +118,7 @@ public class UserControl : MonoBehaviour
 			aim.localRotation = Quaternion.AngleAxis(Mathf.Clamp(theta_mouse_y, -85.0f, 85.0f), u_mouse_y);
 
 			// aim horizontally
-			//aim.RotateAround(transform.position, transform.up, Input.GetAxis("Mouse X"));
+			//aim.RotateAround(transform.position, -1.0f * transform.up, Input.GetAxis("Mouse X"));
 			//aim.localRotation.ToAngleAxis(out float theta_mouse_x, out Vector3 u_mouse_x);
 			//aim.localRotation = Quaternion.AngleAxis(theta_mouse_x, u_mouse_x);
 		}
