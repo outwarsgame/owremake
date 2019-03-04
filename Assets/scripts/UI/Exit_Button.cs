@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-public class Exit : MonoBehaviour
+public class Exit_Button : ButtonSoundAction
 {
-	public void ExitProgram()
+	protected override void DoIt()
 	{
 		Application.Quit();
 #if UNITY_EDITOR
