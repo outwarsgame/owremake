@@ -9,7 +9,7 @@ public abstract class ButtonSoundAction : MonoBehaviour
 	/// The specific action of the aimed button should be implemented in this overriden function in the daughter class.
 	/// </summary>
 	protected abstract void DoIt(); 
-
+	
 	[SerializeField]
 	List<AudioSource> AudioSources = new List<AudioSource>();
 
