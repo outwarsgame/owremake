@@ -45,6 +45,7 @@ public abstract class ButtonSoundAction : MonoBehaviour
 
 		yield return new WaitForSeconds(maxClipLength);
 
+		grc.enabled = true;
 		DoIt();
 	}
 }
