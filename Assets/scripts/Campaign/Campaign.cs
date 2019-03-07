@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Video;
@@ -20,37 +20,53 @@ public class Campaign : MonoBehaviour
 
 	void Awake()
 	{
+		missions = new List<Mission>();
+
 		LoadMissions();
-	}
+	}	
 
 	void LoadMissions()
 	{
 		string path = "campaign/copyrighted/" + Name + "/";
-		string currentPath;
+		string currentPath = "";
 
-		for (int i = 0; i < NbMissions; i++)
+		Sprite card, leftImage, rightImage;
+		TextAsset objectives, overview;
+		VideoClip video;
+
+		try
 		{
-			currentPath = path + "M" + i + "/brief/";
+			for (int i = 0; i < NbMissions; i++)
+			{
+				currentPath = path + "M" + i + "/brief/";
+			
+				card = Resources.Load<Sprite>(currentPath + "card");
+				if (card == null) throw new Exception(currentPath + "card not found");
 
-			Sprite card = Resources.Load<Sprite>(currentPath + "card");
-			if (!card) Debug.Log(currentPath + "briefCard.png not found!");
+				leftImage = Resources.Load<Sprite>(currentPath + "left_image");
+				if (leftImage == null) throw new Exception(currentPath + "left_image not found");
 
-			Sprite leftImage = Resources.Load<Sprite>(currentPath + "left_image");
-			if (!leftImage) Debug.Log(currentPath + "left_image.png not found!");
+				rightImage = Resources.Load<Sprite>(currentPath + "right_image");
+				if (rightImage == null) throw new Exception(currentPath + "right_image not found");
 
-			Sprite rightImage = Resources.Load<Sprite>(currentPath + "right_image");
-			if (!rightImage) Debug.Log(currentPath + "right_image.png not found!");
+				objectives = Resources.Load<TextAsset>(currentPath + "objectives");
+				if (objectives == null) throw new Exception(currentPath + "objectives not found");
 
-			TextAsset objectives = Resources.Load<TextAsset>(currentPath + "objectives");
-			if (!objectives) Debug.Log(currentPath + "objectives.txt not found!");
+				overview = Resources.Load<TextAsset>(currentPath + "overview");
+				if (overview == null) throw new Exception(currentPath + "overview not found");
 
-			TextAsset overview = Resources.Load<TextAsset>(currentPath + "overview");
-			if (!overview) Debug.Log(currentPath + "overview.txt not found!");
+				video = Resources.Load<VideoClip>(currentPath + "video");
+				if (video == null) throw new Exception(currentPath + "video not found");
 
-			VideoClip video = Resources.Load<VideoClip>(currentPath + "video");
-			if (!video) Debug.Log(currentPath + "video.mp4 not found!");
-
-			missions.Add(new Mission(card, leftImage, rightImage, objectives.text, overview.text, video));
+				missions.Add(new Mission(card, leftImage, rightImage, objectives.text, overview.text, video));
+			}
+		}
+		catch (Exception e)
+		{
+			Debug.Log("Exception " + e.Message + " occurred.");
 		}
 	}
 }
+
+
+
