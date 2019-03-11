@@ -1,0 +1,1 @@
+mogrify -format png -path D:\Temp\. H:\MISN\*.pcx
