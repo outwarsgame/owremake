@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Video;
-using System.Diagnostics;
+//using System.Diagnostics;
 
 // TODO: See campaign gameobject Hierarchy
 // - On load, insert the loaded campaign assets in the GUI
@@ -17,6 +19,9 @@ public class Campaign : MonoBehaviour
 	[SerializeField]
 	int NbMissions;
 
+	[SerializeField]
+	string CD_path;
+
 	private List<Mission> missions;
 
 	void Awake()
@@ -24,14 +29,38 @@ public class Campaign : MonoBehaviour
 		missions = new List<Mission>();
 
 		//LoadMissions();
-		LoadOriginalMissionsFromCD();
+		CopyOriginalContentsFromCD();
 	}
 
 	// TELL THE USER TO INSTALL IMAGEMAGICK
-	void LoadOriginalMissionsFromCD()
+	// copy all original_campaign data to Application.dataPath/original_campaign (need space!)
+	void CopyOriginalContentsFromCD()
 	{
+		string path = "";
+
+#if UNITY_EDITOR
+		path = Application.dataPath + "/../";
+#else
+		path = Application.dataPath + "/";
+#endif
+		DirectoryInfo dir = Directory.CreateDirectory(path + "original_campaign/original_contents");
+
+		/*FileUtil.CopyFileOrDirectory(CD_path + "MISN", dir.ToString() + "/MISN");
+		FileUtil.CopyFileOrDirectory(CD_path + "MUSIC", dir.ToString() + "/MUSIC");
+		FileUtil.CopyFileOrDirectory(CD_path + "FONTS", dir.ToString() + "/FONTS");
+		FileUtil.CopyFileOrDirectory(CD_path + "MOVIES", dir.ToString() + "/MOVIES");
+		FileUtil.CopyFileOrDirectory(CD_path + "SHELLDB/CARDS", dir.ToString() + "/CARDS");
+		FileUtil.CopyFileOrDirectory(CD_path + "SHELLDB/NETIMG", dir.ToString() + "/NETIMG");
+		FileUtil.CopyFileOrDirectory(CD_path + "SHELLDB/ON_SHIP", dir.ToString() + "/ON_SHIP");
+		FileUtil.CopyFileOrDirectory(CD_path + "SHELLDB/OUTLOGO.PCX", dir.ToString() + "/OUTLOGO.PCX");
+		FileUtil.CopyFileOrDirectory(CD_path + "VOICES", dir.ToString() + "/VOICES");*/
+
+		DirectoryInfo dir_conv = Directory.CreateDirectory(path + "original_campaign/converted_contents");
+
+		// TODO run all conversions and classify with a readable hierarchy
+
 		//Process.Start(Environment.CurrentDirectory + @"\Assets\converter.bat");
-		Process.Start(Application.dataPath + "/tools/converter.bat");
+		//Process.Start(Application.dataPath + "/tools/converter.bat");
 	}
 
 	//void LoadMissions()
@@ -76,6 +105,3 @@ public class Campaign : MonoBehaviour
 	//	}
 	//}
 }
-
-
-
