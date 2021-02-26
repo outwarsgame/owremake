@@ -2,7 +2,7 @@
 Remake of the classic Outwars multiplayer melee! 
 
 # License
-Boilerplate MIT license stuff, you get the idea
+Boilerplate MIT license for the code, you get the idea.  Future art assets may end up licensed differently.  
 
 Copyright © 2021 Xavier
 
